@@ -26,13 +26,11 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
     private ScatterChart mChart;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        System.out.println("Hellow world!");
 
         mChart = (ScatterChart) findViewById(R.id.scatter);
         mChart.setDescription("");
@@ -58,15 +56,15 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
 //        XAxis xl = mChart.getXAxis();
 
-        ArrayList<Entry> yVals1 = new ArrayList<Entry>();
+        ArrayList<Entry> yVals = new ArrayList<Entry>();
 
         for (int i = 0; i < 10; i++) {
             float val = (float) (Math.random() * 100) + 3;
-            yVals1.add(new Entry(i, val));
+            yVals.add(new Entry(i, val));
         }
 
-        System.out.println(yVals1);
-        ScatterDataSet set1 = new ScatterDataSet(yVals1, "DS 1");
+        System.out.println(yVals);
+        ScatterDataSet set1 = new ScatterDataSet(yVals, "DS 1");
         set1.setScatterShape(ScatterChart.ScatterShape.SQUARE);
         set1.setColor(ColorTemplate.COLORFUL_COLORS[1]);
         set1.setScatterShapeSize(4f);
