@@ -25,6 +25,12 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener {
 
     private ScatterChart mChart;
+    private String action;
+
+    public static String myIP = "192.168.0.1";
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +87,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         Log.i("VAL SELECTED",
                 "Value: " + e.getY() + ", xIndex: " + e.getX()
                         + ", DataSet index: " + h.getDataSetIndex());
+        action = "trigger";
+        // The actual index needs to be modified.
+        Thread trigger = new Thread(new OSCSend(myIP, action, (int) e.getX()));
+        trigger.start();
     }
 
     @Override
