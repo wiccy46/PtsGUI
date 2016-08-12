@@ -16,15 +16,12 @@ import java.util.ArrayList;
 public class OSCSend implements Runnable {
     String myIP; // Needs to be an input option.
     int myPort = 5678;
-    String action; // action define what function it uses.
     OSCPortOut oscPortOut;
     int idx;
 
 
-
-    public OSCSend(String myIP, String action, int idx){
+    public OSCSend(String myIP, int idx){
         this.myIP = myIP;
-        this.action = action;
         this.idx = idx;
 
         try{
@@ -37,7 +34,6 @@ public class OSCSend implements Runnable {
             Log.d("OSCSendInitalisation", "Socket exception error!");
         }
     }
-
 
 
 
