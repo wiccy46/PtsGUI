@@ -37,11 +37,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private ScatterChart mChart;
     public static String myIP = "192.168.178.20";
     private int nr; // Initialise the number of row
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+
 //    OSCPortIn receiver;
 
 
@@ -82,12 +78,13 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             yVals.add(new Entry(i, val));
         }
         int listenPort = 5679;
-
+//        Thread populateData = new Thread(new ReceiveOSC());
+//        populateData.start();
 
 
         try {
-            System.out.println("Start listening to Port: " + listenPort);
             OSCPortIn receiver = new OSCPortIn(listenPort);
+            System.out.println("Port: " + listenPort);
             OSCListener listener = new OSCListener() {
                 public void acceptMessage(Date time, OSCMessage message) {
                     System.out.println("Message received!");
@@ -96,9 +93,9 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             receiver.addListener("/fromPython", listener);
             receiver.startListening();
         } catch (SocketException e) {
-            // Report error
             Log.d("OSCSendInitalisation", "Socket exception error!");
         }
+
 
 
 //        ArrayList<Entry> myData = new ArrayList<Entry>();
@@ -134,9 +131,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 //        mChart.setData(data);
 //        mChart.invalidate();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
     }
 
     @Override
@@ -155,47 +150,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         System.out.println("Nothing!");
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.example.jiajunyang.ptsgui/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.example.jiajunyang.ptsgui/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
-    }
-
-
-//
 
 }

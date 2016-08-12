@@ -14,16 +14,12 @@ import java.util.ArrayList;
  */
 
 public class OSCSend implements Runnable {
-    String myIP; // Needs to be an input option.
+    String myIP; int idx; OSCPortOut oscPortOut; // Needs to be an input option.
     int myPort = 5678;
-    OSCPortOut oscPortOut;
-    int idx;
-
 
     public OSCSend(String myIP, int idx){
         this.myIP = myIP;
         this.idx = idx;
-
         try{
             // Connect to IP and port
             this.oscPortOut  = new OSCPortOut(InetAddress.getByName(myIP), myPort);
@@ -35,33 +31,25 @@ public class OSCSend implements Runnable {
         }
     }
 
-
-
     private void sendIndex(){
         ArrayList<Object> sendBang = new ArrayList<>();
         sendBang.add(idx);
         OSCMessage message = new OSCMessage("/trigger", sendBang);
         Log.d("OSC", "Data index: " + idx);
         try{
-            // Send messages
             oscPortOut.send(message);
         } catch (Exception e){
             Log.d("OSC", "Failed to send.");
         }
     }
 
-
-
-
     // Run the thread.
     @Override
     public void run(){
         if (oscPortOut != null) {
-            sendIndex();
-        }
+            sendIndex();}
         else{
             Log.d("OSC Action Error: ", "OSC Action Error."); // Need to change it to a Toast.
-            }
+             }
     }
-
 }
