@@ -87,9 +87,9 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
 
 
-
-        String ipad = getLocalIpAddress();
-        System.out.println("Your emulator IP is: " + ipad);
+//          These two lines are to check the IP address of the emulator.
+//        String ipad = getLocalIpAddress();
+////        System.out.println("Your emulator IP is: " + ipad);
 
         Thread populateData = new Thread(new ReceiveOSC());
         populateData.start();
@@ -198,14 +198,14 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                 for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress()) {
-                        return inetAddress.getHostAddress().toString();
+                        System.out.println("IP is : " + inetAddress.getHostAddress().toString());
                     }
                 }
             }
         } catch (SocketException ex) {
             System.out.println("getLocalIpAddress Socket error");
         }
-        return null;
+        return "a";
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPortIn;
 import java.net.SocketException;
+import java.util.Arrays;
 import java.util.Date;
 
 public class ReceiveOSC implements Runnable {
@@ -18,7 +19,8 @@ public class ReceiveOSC implements Runnable {
             receiver = new OSCPortIn(myPort);
             OSCListener listener = new OSCListener() {
                 public void acceptMessage(Date time, OSCMessage message) {
-                    System.out.println(message);
+                    System.out.println(message.getArguments().get(0));
+                    System.out.println(message.getArguments().get(1));
                 }
             };
             receiver.addListener("/fromPython", listener);
