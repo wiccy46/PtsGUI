@@ -18,7 +18,7 @@ public class ReceiveOSC implements Runnable {
             receiver = new OSCPortIn(myPort);
             OSCListener listener = new OSCListener() {
                 public void acceptMessage(Date time, OSCMessage message) {
-                    System.out.println("Message received!");
+                    System.out.println(message);
                 }
             };
             receiver.addListener("/fromPython", listener);

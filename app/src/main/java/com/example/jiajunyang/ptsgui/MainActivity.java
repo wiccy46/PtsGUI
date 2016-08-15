@@ -214,8 +214,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                 "Value: " + e.getY() + ", xIndex: " + e.getX()
                         + ", DataSet index: " + h.getDataSetIndex());
         // The actual index needs to be modified.
-//        Thread trigger = new Thread(new OSCSend(myIP, (int) e.getX()));
-//        trigger.start();
+        Thread trigger = new Thread(new OSCSend(myIP, (int) e.getX()));
+        trigger.start();
     }
 
     @Override
