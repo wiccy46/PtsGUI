@@ -8,15 +8,14 @@ import java.net.SocketException;
 import java.util.Date;
 
 public class ReceiveOSC implements Runnable {
-    int myPort = 5679;
+    int myPort = 7012;
+
     OSCPortIn receiver;
 
     public ReceiveOSC() {
         System.out.println("Init OSC Receiver" );
-
         try {
             receiver = new OSCPortIn(myPort);
-
             OSCListener listener = new OSCListener() {
                 public void acceptMessage(Date time, OSCMessage message) {
                     System.out.println("Message received!");

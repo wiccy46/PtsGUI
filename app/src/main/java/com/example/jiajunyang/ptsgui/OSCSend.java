@@ -14,7 +14,8 @@ import java.util.ArrayList;
  */
 
 public class OSCSend implements Runnable {
-    String myIP; int idx; OSCPortOut oscPortOut; // Needs to be an input option.
+    String myIP; int idx;
+    OSCPortOut oscPortOut; // Needs to be an input option.
     int myPort = 5678;
 
     public OSCSend(String myIP, int idx){
@@ -34,7 +35,7 @@ public class OSCSend implements Runnable {
     private void sendIndex(){
         ArrayList<Object> sendBang = new ArrayList<>();
         sendBang.add(idx);
-        OSCMessage message = new OSCMessage("/trigger", sendBang);
+        OSCMessage message = new OSCMessage("/fromPython", sendBang);
         Log.d("OSC", "Data index: " + idx);
         try{
             oscPortOut.send(message);
