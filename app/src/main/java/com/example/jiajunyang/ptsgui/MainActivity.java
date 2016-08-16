@@ -46,11 +46,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     public OSCPortIn receiver;
     private float x, y;
     public ArrayList<Entry> myData = new ArrayList<Entry>();
-    public ScatterDataSet set1 = new ScatterDataSet(myData, "DS 1");
-
-    public ArrayList<IScatterDataSet> dataSets  = new ArrayList<>();
-
-//    public ScatterData data = new ScatterData(dataSets);
 
 
 
@@ -70,18 +65,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
-
-//        mChart.setMaxVisibleValueCount(1000);
         mChart.setPinchZoom(true);
 
-//        YAxis yl = mChart.getAxisLeft();
-//        yl.setTypeface(mTfLight); // Comment this out for now.
-//        yl.setAxisMinimum(0f);
+        mChart.getAxisRight().setEnabled(true);
 
-        mChart.getAxisRight().setEnabled(false);
-        set1.setScatterShape(ScatterChart.ScatterShape.SQUARE);
-        set1.setColor(ColorTemplate.COLORFUL_COLORS[1]);
-        set1.setScatterShapeSize(4f);
 
 
 //        XAxis xl = mChart.getXAxis();
@@ -125,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                         myData.add(new Entry(x, y));
                     }
 
-                    System.out.println(myData);
+
                 }
             };
             receiver.addListener("/resetData", resetDataListener);
@@ -138,38 +125,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         }
 
 
-
-        //------------------
-//
 //        for (int i = 0; i < 10; i++) {
 //            float val = (float) (Math.random());
 //            myData.add(new Entry((float) (Math.random()), val));
 //        }
-
-
-//
-//        ScatterDataSet set1 = new ScatterDataSet(myData, "DS 1");
-
-//        ArrayList<IScatterDataSet> dataSets = new ArrayList<>();
-//        dataSets.add(set1); // add the datasets
-//        ScatterData data = new ScatterData(dataSets);
-//        mChart.setData(data);
-//        mChart.invalidate();
-
-
-//
-//
-//        System.out.println(yVals);
-//        ScatterDataSet set1 = new ScatterDataSet(yVals, "DS 1");
-//        set1.setScatterShape(ScatterChart.ScatterShape.SQUARE);
-//        set1.setColor(ColorTemplate.COLORFUL_COLORS[1]);
-//        set1.setScatterShapeSize(4f);
-//        ArrayList<IScatterDataSet> dataSets = new ArrayList<>();
-//        dataSets.add(set1); // add the datasets
-//        ScatterData data = new ScatterData(dataSets);
-//        mChart = (ScatterChart) findViewById(R.id.scatter);
-//        mChart.setData(data);
-//        mChart.invalidate();
 
     }
 
@@ -192,30 +151,25 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     }
 
 
-    public void onRandom(View view) {
-        myData.clear();
-//        dataSets.
-//        dataSets.clear();
-        for (int i = 0; i < 10; i++) {
-            float val = (float) (Math.random());
-            myData.add(new Entry((float) (Math.random()), val));
-        }
-
-    }
 
 
 
     public void onPlot(View view) {
         System.out.println("plot data");
         System.out.println(myData);
-//        set1.setValues(myData);
-////        dataSets.clear();
-//        dataSets.add(set1); // add the datasets
-//
-//        ScatterData data = new ScatterData(dataSets);
-////        mChart = (ScatterChart) findViewById(R.id.scatter);
-//        mChart.setData(data);
-//        mChart.invalidate();
+
+        ScatterDataSet set1 = new ScatterDataSet(myData, "DS 1");
+        set1.setScatterShape(ScatterChart.ScatterShape.SQUARE);
+        set1.setColor(ColorTemplate.COLORFUL_COLORS[1]);
+        set1.setScatterShapeSize(4f);
+        ArrayList<IScatterDataSet> dataSets = new ArrayList<>();
+        dataSets.add(set1); // add the datasets
+
+        ScatterData data = new ScatterData(dataSets);
+
+
+        mChart.setData(data);
+        mChart.invalidate();
 
 
     }

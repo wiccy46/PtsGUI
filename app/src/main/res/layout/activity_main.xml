@@ -38,16 +38,6 @@
                 android:layout_gravity="center_vertical|top"
                 android:layout_weight="0.5" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="random"
-                android:id="@+id/button2"
-                android:layout_centerVertical="true"
-                android:layout_alignStart="@+id/button"
-                android:onClick="onRandom"
-                android:layout_gravity="center_vertical|top"
-                android:layout_weight="0.5" />
         </LinearLayout>
     </LinearLayout>
 
