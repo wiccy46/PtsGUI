@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private int nr; // Initialise the number of129.70.148.105 row
 
     public OSCPortIn receiver;
+    private float x, y;
+    public ArrayList<Entry> myData = new ArrayList<Entry>();
 
 
 
@@ -91,87 +93,62 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 //        String ipad = getLocalIpAddress();
 ////        System.out.println("Your emulator IP is: " + ipad);
 
-        Thread populateData = new Thread(new ReceiveOSC());
-        populateData.start();
+//        Thread populateData = new Thread(new ReceiveOSC());
+//        populateData.start();
 
-//        int listenPort = 5679;
+        int listenPort = 7012;
+
 ////
-//        try {
-//            receiver = new OSCPortIn(listenPort);
-//            OSCListener listener = new OSCListener() {
-//                public void acceptMessage(Date time, OSCMessage message) {
-//                    System.out.println("Message received!");
-//                }
-//            };
-//            receiver.addListener("/fromPython", listener);
-//            receiver.startListening();
-//            System.out.println("Port: " + listenPort);
-//        } catch (SocketException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            receiver = new OSCPortIn(listenPort);
+            OSCListener nrListener = new OSCListener() {
+                public void acceptMessage(Date time, OSCMessage message) {
+                    nr = Integer.parseInt(message.getArguments().get(0).toString());
+                    System.out.println("row number is " + nr);
+                }
+            };
 
 
-//        Thread thread = new Thread(new Runnable()
-//        {
-//            @Override
-//            public void run()
-//            {
-//                try
-//                {
-//                    // Try to use DatagramPacket here.
-//                    try {
-//                        ds = new DatagramSocket(7012);
-//
-//                    } catch (SocketException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    byte[] buffer = new byte[16];
-//                    packet = new DatagramPacket(buffer, buffer.length);
-//
-//                    try{
-//                        ds.receive(packet);
-//                    } catch(IOException e1){
-//                        e1.printStackTrace();
-//                    }
-//                    byte[] buff = packet.getData();
-//
-//                    System.out.println(buff);
-//                }
-//                catch (Exception e)
-//                {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//
-//        thread.start();
-//
-
+            OSCListener dataListener = new OSCListener() {
+                public void acceptMessage(Date time, OSCMessage message) {
+                    x = Float.parseFloat(message.getArguments().get(0).toString());
+                    y = Float.parseFloat(message.getArguments().get(1).toString());
+                    for (int i = 0; i < nr; i++) {
+                        myData.add(new Entry(x, y));
+                    }
+                    System.out.println(myData);
+                }
+            };
+            receiver.addListener("/getNr", nrListener);
+            receiver.addListener("/getData", dataListener);
+            receiver.startListening();
+            System.out.println("Port: " + listenPort);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
 
 
 
         //------------------
 
-        ArrayList<Entry> myData = new ArrayList<Entry>();
-        int nr = 20;
+
 //        dataSet, nr = receivingData();
 //
-        for (int i = 0; i < nr; i++) {
-            float val = (float) (Math.random() * 100) + 3;
-            myData.add(new Entry(i, val));
-        }
-
-        System.out.println(myData);
-        ScatterDataSet set1 = new ScatterDataSet(myData, "DS 1");
-        set1.setScatterShape(ScatterChart.ScatterShape.SQUARE);
-        set1.setColor(ColorTemplate.COLORFUL_COLORS[1]);
-        set1.setScatterShapeSize(4f);
-        ArrayList<IScatterDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set1); // add the datasets
-        ScatterData data = new ScatterData(dataSets);
-        mChart.setData(data);
-        mChart.invalidate();
+//        for (int i = 0; i < nr; i++) {
+//            float val = (float) (Math.random() * 100) + 3;
+//            myData.add(new Entry(i, val));
+//        }
+//
+//        System.out.println(myData);
+//        ScatterDataSet set1 = new ScatterDataSet(myData, "DS 1");
+//        set1.setScatterShape(ScatterChart.ScatterShape.SQUARE);
+//        set1.setColor(ColorTemplate.COLORFUL_COLORS[1]);
+//        set1.setScatterShapeSize(4f);
+//        ArrayList<IScatterDataSet> dataSets = new ArrayList<>();
+//        dataSets.add(set1); // add the datasets
+//        ScatterData data = new ScatterData(dataSets);
+//        mChart.setData(data);
+//        mChart.invalidate();
 
 
 //
@@ -186,7 +163,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 //        ScatterData data = new ScatterData(dataSets);
 //        mChart.setData(data);
 //        mChart.invalidate();
-
 
     }
 
