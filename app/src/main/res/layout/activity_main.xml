@@ -41,6 +41,14 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="reset data"
+                android:id="@+id/button3"
+                android:layout_weight="0.5"
+                android:onClick="onReset" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Display"
                 android:id="@+id/button2"
                 android:layout_weight="0.5"

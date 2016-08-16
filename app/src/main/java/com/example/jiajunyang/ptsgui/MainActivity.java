@@ -1,12 +1,10 @@
 package com.example.jiajunyang.ptsgui;
 
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.github.mikephil.charting.charts.ScatterChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
+
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.ScatterData;
 import com.github.mikephil.charting.data.ScatterDataSet;
@@ -17,21 +15,17 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
-import com.illposed.osc.OSCPort;
+
 import com.illposed.osc.OSCPortIn;
 
 
 import android.util.Log;
 import android.view.View;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -44,9 +38,9 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     public static String myIP = "129.70.149.23";
     private int nr;
     public OSCPortIn receiver;
-    private float x, y;
-    private ArrayList<Entry> myData = new ArrayList<Entry>();
-    private int listenPort = 7012;
+    float x, y;
+    ArrayList<Entry> myData = new ArrayList<Entry>();
+    int listenPort = 7012;
 
 
 
@@ -77,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 ////
         try {
             receiver = new OSCPortIn(listenPort);
-
             OSCListener resetDataListener = new OSCListener() {
                 public void acceptMessage(Date time, OSCMessage message) {
                     myData.clear();
@@ -95,10 +88,10 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
             OSCListener dataListener = new OSCListener() {
                 public void acceptMessage(Date time, OSCMessage message) {
+                    System.out.println("Receiving data");
                     int idx;
                     int val;
-//                    myData.clear();
-                    for (int i = 0; i < 2; i ++)
+                    for (int i = 0; i < nr; i ++)
                     {
                         x = Float.parseFloat(message.getArguments().get(i*2).toString()) * 1000;
                         y = Float.parseFloat(message.getArguments().get(i * 2+ 1).toString())* 1000;
@@ -108,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                     }
                 }
             };
-//            receiver.addListener("/resetData", resetDataListener);
+            receiver.addListener("/resetData", resetDataListener);
             receiver.addListener("/getNr", nrListener);
             receiver.addListener("/getData", dataListener);
             receiver.startListening();
@@ -140,18 +133,14 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     }
 
 
-//    public void onRandom(View view) {
-//        myData.clear();
-//        for (int i = 0; i < 10; i++) {
-//            float val = (float) (Math.random());
-//            myData.add(new Entry((float) (Math.random()), val));
-//        }
-//    }
 
 
     public void onPrint(View view){
         System.out.println("New data is : ");
         System.out.println(myData);
+    }
+    public void onReset(View view){
+        myData.clear();
     }
 
     public void onPlot(View view) {
@@ -160,7 +149,9 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 //        myData.clear();
 //        for (int i = 0; i < 10; i++) {
 //            float val = (float) (Math.random());
-//            myData.add(new Entry((i - 5) * 100, val * 100));
+//            float idx = (float) (Math.random());
+////            myData.add(new Entry((i - 5) * 100, val * 100));
+////            myData.add(new Entry(idx, val * 100));
 //        }
         ScatterDataSet set1 = new ScatterDataSet(myData, "DS 1");
         set1.setScatterShape(ScatterChart.ScatterShape.SQUARE);
@@ -191,7 +182,5 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
         System.out.println("Nothing!");
     }
-
-
 
 }
