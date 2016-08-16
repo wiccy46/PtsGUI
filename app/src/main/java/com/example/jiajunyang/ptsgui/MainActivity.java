@@ -80,14 +80,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
 //        XAxis xl = mChart.getXAxis();
 
-        ArrayList<Entry> yVals = new ArrayList<Entry>();
-
-        for (int i = 0; i < 10; i++) {
-            float val = (float) (Math.random() * 100) + 3;
-            yVals.add(new Entry(i, val));
-        }
-
-
 
 //          These two lines are to check the IP address of the emulator.
 //        String ipad = getLocalIpAddress();
@@ -101,6 +93,14 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 ////
         try {
             receiver = new OSCPortIn(listenPort);
+
+            OSCListener resetDataListener = new OSCListener() {
+                public void acceptMessage(Date time, OSCMessage message) {
+                    myData = new ArrayList<Entry>();
+                    System.out.println("Reset Data");
+                }
+            };
+
             OSCListener nrListener = new OSCListener() {
                 public void acceptMessage(Date time, OSCMessage message) {
                     nr = Integer.parseInt(message.getArguments().get(0).toString());
@@ -111,14 +111,18 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
             OSCListener dataListener = new OSCListener() {
                 public void acceptMessage(Date time, OSCMessage message) {
-                    x = Float.parseFloat(message.getArguments().get(0).toString());
-                    y = Float.parseFloat(message.getArguments().get(1).toString());
-                    for (int i = 0; i < nr; i++) {
+                    for (int i = 0; i < nr; i ++)
+                    {
+                        x = Float.parseFloat(message.getArguments().get(i*2).toString());
+                        y = Float.parseFloat(message.getArguments().get(i * 2+ 1).toString());
                         myData.add(new Entry(x, y));
                     }
+
+
                     System.out.println(myData);
                 }
             };
+            receiver.addListener("/resetData", resetDataListener);
             receiver.addListener("/getNr", nrListener);
             receiver.addListener("/getData", dataListener);
             receiver.startListening();
