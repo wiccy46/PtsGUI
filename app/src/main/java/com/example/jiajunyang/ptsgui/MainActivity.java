@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
 
     public void onRandom(View view) {
-//        myData.clear();
+        myData.clear();
 //        dataSets.
 //        dataSets.clear();
         for (int i = 0; i < 10; i++) {
