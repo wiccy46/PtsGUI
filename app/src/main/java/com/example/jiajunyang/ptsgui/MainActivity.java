@@ -45,7 +45,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     private int nr;
     public OSCPortIn receiver;
     private float x, y;
-    public ArrayList<Entry> myData = new ArrayList<Entry>();
+    private ArrayList<Entry> myData = new ArrayList<Entry>();
+    private int listenPort = 7012;
 
 
 
@@ -53,26 +54,17 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mChart = (ScatterChart) findViewById(R.id.scatter);
         mChart.setDescription("");
         mChart.setOnChartValueSelectedListener(this);
         mChart.setDrawGridBackground(false);
         mChart.setTouchEnabled(true);
         mChart.setMaxHighlightDistance(20f);
-
         // Enable Scaling and dragging
-
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
         mChart.setPinchZoom(true);
-
         mChart.getAxisRight().setEnabled(true);
-
-
-
-//        XAxis xl = mChart.getXAxis();
-
 
 //          These two lines are to check the IP address of the emulator.
 //        String ipad = getLocalIpAddress();
@@ -81,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 //        Thread populateData = new Thread(new ReceiveOSC());
 //        populateData.start();
 
-        int listenPort = 7012;
 
 ////
         try {
@@ -104,18 +95,20 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
             OSCListener dataListener = new OSCListener() {
                 public void acceptMessage(Date time, OSCMessage message) {
-
-                    for (int i = 0; i < nr; i ++)
+                    int idx;
+                    int val;
+//                    myData.clear();
+                    for (int i = 0; i < 2; i ++)
                     {
-                        x = Float.parseFloat(message.getArguments().get(i*2).toString());
-                        y = Float.parseFloat(message.getArguments().get(i * 2+ 1).toString());
-                        myData.add(new Entry(x, y));
+                        x = Float.parseFloat(message.getArguments().get(i*2).toString()) * 1000;
+                        y = Float.parseFloat(message.getArguments().get(i * 2+ 1).toString())* 1000;
+                        idx = (int) x;
+                        val = (int) y;
+                        myData.add(new Entry(idx, val));
                     }
-
-
                 }
             };
-            receiver.addListener("/resetData", resetDataListener);
+//            receiver.addListener("/resetData", resetDataListener);
             receiver.addListener("/getNr", nrListener);
             receiver.addListener("/getData", dataListener);
             receiver.startListening();
@@ -125,10 +118,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         }
 
 
-//        for (int i = 0; i < 10; i++) {
-//            float val = (float) (Math.random());
-//            myData.add(new Entry((float) (Math.random()), val));
-//        }
 
     }
 
@@ -151,23 +140,36 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     }
 
 
+//    public void onRandom(View view) {
+//        myData.clear();
+//        for (int i = 0; i < 10; i++) {
+//            float val = (float) (Math.random());
+//            myData.add(new Entry((float) (Math.random()), val));
+//        }
+//    }
 
 
+    public void onPrint(View view){
+        System.out.println("New data is : ");
+        System.out.println(myData);
+    }
 
     public void onPlot(View view) {
         System.out.println("plot data");
         System.out.println(myData);
-
+//        myData.clear();
+//        for (int i = 0; i < 10; i++) {
+//            float val = (float) (Math.random());
+//            myData.add(new Entry((i - 5) * 100, val * 100));
+//        }
         ScatterDataSet set1 = new ScatterDataSet(myData, "DS 1");
         set1.setScatterShape(ScatterChart.ScatterShape.SQUARE);
         set1.setColor(ColorTemplate.COLORFUL_COLORS[1]);
         set1.setScatterShapeSize(4f);
         ArrayList<IScatterDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1); // add the datasets
-
         ScatterData data = new ScatterData(dataSets);
-
-
+        System.out.println(myData);
         mChart.setData(data);
         mChart.invalidate();
 
