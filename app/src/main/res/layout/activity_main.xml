@@ -10,13 +10,52 @@
     tools:context="com.example.jiajunyang.ptsgui.MainActivity">
 
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <com.github.mikephil.charting.charts.ScatterChart
+            android:id="@+id/scatter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5" />
 
-    <com.github.mikephil.charting.charts.ScatterChart
-        android:id="@+id/scatter"
-        android:layout_width="600dp"
-        android:layout_height="600dp" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5">
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Plot"
+                android:id="@+id/button"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:onClick="onPlot"
+                android:layout_gravity="center_vertical|top"
+                android:layout_weight="0.5" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="reset data"
+                android:id="@+id/button3"
+                android:layout_weight="0.5"
+                android:onClick="onReset" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Display"
+                android:id="@+id/button2"
+                android:layout_weight="0.5"
+                android:onClick="onPrint" />
+
+        </LinearLayout>
+    </LinearLayout>
 
 
 </RelativeLayout>
