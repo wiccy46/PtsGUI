@@ -13,46 +13,103 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/linearLayout"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true">
 
-        <com.github.mikephil.charting.charts.BubbleChart
-            android:id="@+id/chart1"
-            android:layout_width="1500dp"
+        <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/frameView"-->
+            <!--android:src="@drawable/square"-->
+            <!--android:elevation="3dp"-->
+            <!--android:layout_alignTop="@+id/chart1"-->
+            <!--android:layout_alignBottom="@+id/chart1"-->
+            <!--android:layout_alignStart="@+id/chart1"-->
+            <!--android:layout_alignEnd="@+id/chart1"-->
+            <!--/>-->
+
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.5" />
+            android:layout_weight="0.5"
+            android:id="@+id/frameLayout">
+
+            <com.github.mikephil.charting.charts.ScatterChart
+                android:id="@+id/chart1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/touchView"
+                android:layout_gravity="center" />
+        </FrameLayout>
+
+        <!--android:layout_alignTop="@+id/chart1"-->
+        <!--android:layout_alignBottom="@+id/chart1"-->
+        <!--android:layout_alignStart="@+id/chart1"-->
+        <!--android:layout_alignEnd="@+id/chart1"-->
+
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5">
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Plot"
-                android:id="@+id/button"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:onClick="onPlot"
-                android:layout_gravity="center_vertical|top"
-                android:layout_weight="0.5" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5">
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="reset data"
-                android:id="@+id/button3"
-                android:layout_weight="0.5"
-                android:onClick="onReset" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Plot"
+                    android:id="@+id/button"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:onClick="onPlot"
+                    android:layout_gravity="center_vertical|top"
+                    android:layout_weight="0.5" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Display"
-                android:id="@+id/button2"
-                android:layout_weight="0.5"
-                android:onClick="onPrint" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="reset data"
+                    android:id="@+id/button3"
+                    android:layout_weight="0.5"
+                    android:onClick="onReset" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Display"
+                    android:id="@+id/button2"
+                    android:layout_weight="0.5"
+                    android:onClick="onPrint" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="New Text"
+                    android:id="@+id/textView"
+                    android:layout_gravity="bottom"
+                    android:layout_weight="0.5" />
+            </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>

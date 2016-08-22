@@ -2,10 +2,12 @@ package com.example.jiajunyang.ptsgui;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.github.mikephil.charting.charts.BubbleChart;
+import com.github.mikephil.charting.charts.ScatterChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -28,6 +30,9 @@ import com.illposed.osc.OSCPortIn;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.TextView;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -40,37 +45,79 @@ import java.util.Enumeration;
 public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener {
 
 
-    private BubbleChart mChart;
+    private ScatterChart mChart;
     public static String myIP = "129.70.148.19";
     private int nr;
     private OSCPortIn receiver;
     float x, y;
 
-    private static ArrayList<BubbleEntry> mData = new ArrayList<BubbleEntry>();
+    private static ArrayList<Entry> mData = new ArrayList<Entry>();
     int listenPort = 7012;
 
-
+    private float touchViewWidth; // Locate touchView dimension
+    private float touchViewHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mChart = (BubbleChart) findViewById(R.id.chart1);
+        mChart = (ScatterChart) findViewById(R.id.chart1);
         mChart.setDescription("");
         mChart.setOnChartValueSelectedListener(this);
         mChart.setDrawGridBackground(false);
         mChart.setTouchEnabled(true);
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
-        mChart.setMaxVisibleValueCount(200);
+        mChart.setMaxVisibleValueCount(0);
         mChart.setPinchZoom(true);
         mChart.getAxisRight().setEnabled(true);
+        mChart.setMaxHighlightDistance(10f);
         Legend l = mChart.getLegend();
+
+        final TextView textView = (TextView)findViewById(R.id.textView);
+        final View touchView = findViewById(R.id.touchView); // listen for touch event;
+
+        // Get the width and height of the control panel.
+        touchView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    touchView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    touchView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+                touchViewWidth = touchView.getWidth();
+                touchViewHeight = touchView.getHeight();
+            }
+
+
+        });
+
+        System.out.println("Width: " + touchViewWidth);
+        System.out.println("Height: " + touchViewHeight);
+
+        touchView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int pointerIndex = event.getActionIndex();
+                switch( event.getAction()){
+                    case MotionEvent.ACTION_DOWN: {
+                        float x = (event.getX(pointerIndex) / touchViewWidth - 0.5f);
+                        float y = - (event.getY(pointerIndex)/(touchViewHeight) - 0.5f);
+                        textView.setText("Touch coordinates : " +
+                                String.valueOf(x) + " x " + String.valueOf(y));
+                    }
+                }
+                return true;
+            }
+        });
+
+
 //        mChart.getData().setDrawValues(false);
 //        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
 
-
+//
 //        XAxis xAxis = mChart.getXAxis();
 //        xAxis.setAxisMaxValue(500f);
 //        xAxis.setAxisMinValue(-500f);
@@ -117,12 +164,12 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                         y = Float.parseFloat(message.getArguments().get(i * 2+ 1).toString())* 1000;
                         idx = (int) x;
                         val = (int) y;
-                        mData.add(new BubbleEntry(idx, val, 10f));
+                        mData.add(new Entry(idx, val));
                     }
                     System.out.println(mData);
                 }
             };
-//            receiver.addListener("/resetData", resetDataListener);
+            receiver.addListener("/resetData", resetDataListener);
             receiver.addListener("/getNr", nrListener);
             receiver.addListener("/getData", dataListener);
             receiver.startListening();
@@ -175,28 +222,31 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         System.out.println(mData);
 
         mData.clear();
-        for (int i = 0; i < 80; i++) {
-            float val = (float) (Math.random() * 1000f);
+        for (int i = 0; i < 600; i++) {
+            float val = (float) (Math.random()) - 0.5f;
             float idx = (float) (Math.random());
-            float size = (float) (Math.random() * 500f );
-            mData.add(new BubbleEntry(i* 1000/80 ,  val, 100f ));
+            mData.add(new Entry(i    /600f - 0.5f, val ));
         }
 
-        BubbleDataSet set1 = new BubbleDataSet(mData, "Data");
 
-//        set1.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
-        set1.setColor(ColorTemplate.COLORFUL_COLORS[2], 200);
-        set1.setDrawValues(false);
+        ScatterDataSet set1 = new ScatterDataSet(mData, "Data");
 
-//        set1.setScatterShapeSize(10f);
-        ArrayList<IBubbleDataSet> dataSets = new ArrayList<IBubbleDataSet>();
+        set1.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
+//        set1.setScatterShapeHoleColor(ColorTemplate.COLORFUL_COLORS[3]);
+//        set1.setScatterShapeHoleRadius(3f);
+        set1.setColor(ColorTemplate.COLORFUL_COLORS[1]);
+
+        set1.setScatterShapeSize(12f);
+
+        ArrayList<IScatterDataSet> dataSets = new ArrayList<IScatterDataSet>();
+
         dataSets.add(set1); // add the datasets
-        BubbleData data = new BubbleData(dataSets);
-        data.setDrawValues(false);
-        data.setValueTextSize(8f);
-        data.setValueTextColor(Color.WHITE);
+        ScatterData data = new ScatterData(dataSets);
+//        data.setDrawValues(false);
+//        data.setValueTextSize(8f);
+//        data.setValueTextColor(Color.WHITE);
 
-        data.setHighlightCircleWidth(20f);
+//        data.setHighlightCircleWidth(20f);
         mChart.setData(data);
         mChart.invalidate();
 
