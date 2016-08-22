@@ -28,15 +28,13 @@ import java.util.Enumeration;
 
 
 public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener {
-
     private ScatterChart mChart;
-    public static String myIP = "129.70.149.23";
+    public static String myIP = "129.70.148.19";
     private int nr;
     public OSCPortIn receiver;
     float x, y;
-    ArrayList<Entry> mData = new ArrayList<Entry>();
+    static ArrayList<Entry> mData = new ArrayList<Entry>();
     int listenPort = 7012;
-
 
 
     @Override
@@ -48,13 +46,16 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         mChart.setOnChartValueSelectedListener(this);
         mChart.setDrawGridBackground(false);
         mChart.setTouchEnabled(true);
-        mChart.setMaxHighlightDistance(300f);
+        mChart.isFocusableInTouchMode();
+
+        mChart.setMaxHighlightDistance(70f);
 
         // Enable Scaling and dragging
-        mChart.setDragEnabled(true);
+        mChart.setDragEnabled(false);
         mChart.setScaleEnabled(true);
         mChart.setPinchZoom(true);
         mChart.getAxisRight().setEnabled(true);
+        mChart.setMaxVisibleValueCount(0);
 
 //          These two lines are to check the IP address of the emulator.
 //        String ipad = getLocalIpAddress();
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                     System.out.println(mData);
                 }
             };
-            receiver.addListener("/resetData", resetDataListener);
+//            receiver.addListener("/resetData", resetDataListener);
             receiver.addListener("/getNr", nrListener);
             receiver.addListener("/getData", dataListener);
             receiver.startListening();
@@ -131,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
 
 
-
     public void onPrint(View view){
         System.out.println("New data is : ");
         System.out.println(mData);
@@ -143,34 +143,34 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     public void onPlot(View view) {
         System.out.println("plot data");
         System.out.println(mData);
-        mData.clear();
-        for (int i = 0; i < 200; i++) {
-            float val = (float) (Math.random());
-            float idx = (float) (Math.random());
-            mData.add(new Entry((i - 5) * 100, val * 100));
-        }
-        ScatterDataSet set1 = new ScatterDataSet(mData, "DS 1");
+//        mData.clear();
+//        for (int i = 0; i < 80; i++) {
+//            float val = (float) (Math.random());
+//            float idx = (float) (Math.random());
+//            mData.add(new Entry(i  * 1000 /80, val * 1000));
+//        }
+        ScatterDataSet set1 = new ScatterDataSet(mData, "Data");
         set1.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
         set1.setColor(ColorTemplate.COLORFUL_COLORS[1]);
         set1.setScatterShapeSize(10f);
         ArrayList<IScatterDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1); // add the datasets
         ScatterData data = new ScatterData(dataSets);
-        System.out.println(mData);
         mChart.setData(data);
         mChart.invalidate();
 
 
     }
 
+    // On value selec, need to find the right index. But at the moment it is not correct.
     @Override
     public void onValueSelected(Entry e, Highlight h) {
         Log.i("VAL SELECTED",
                 "Value: " + e.getY() + ", xIndex: " + e.getX()
                         + ", DataSet index: " + h.getDataSetIndex());
         // The actual index needs to be modified.
-//        Thread trigger = new Thread(new OSCSend(myIP, (int) e.getX()));
-//        trigger.start();
+        Thread trigger = new Thread(new OSCSend(myIP, (int) e.getX()));
+        trigger.start();
     }
 
 
