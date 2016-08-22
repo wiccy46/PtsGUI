@@ -1,13 +1,23 @@
 package com.example.jiajunyang.ptsgui;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.github.mikephil.charting.charts.ScatterChart;
+import com.github.mikephil.charting.charts.BubbleChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BubbleData;
+import com.github.mikephil.charting.data.BubbleDataSet;
+import com.github.mikephil.charting.data.BubbleEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.ScatterData;
 import com.github.mikephil.charting.data.ScatterDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.interfaces.datasets.IBubbleDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.listener.ChartTouchListener;
@@ -28,34 +38,47 @@ import java.util.Enumeration;
 
 
 public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener {
-    private ScatterChart mChart;
+
+
+    private BubbleChart mChart;
     public static String myIP = "129.70.148.19";
     private int nr;
-    public OSCPortIn receiver;
+    private OSCPortIn receiver;
     float x, y;
-    static ArrayList<Entry> mData = new ArrayList<Entry>();
+
+    private static ArrayList<BubbleEntry> mData = new ArrayList<BubbleEntry>();
     int listenPort = 7012;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mChart = (ScatterChart) findViewById(R.id.scatter);
+
+        mChart = (BubbleChart) findViewById(R.id.chart1);
         mChart.setDescription("");
         mChart.setOnChartValueSelectedListener(this);
         mChart.setDrawGridBackground(false);
         mChart.setTouchEnabled(true);
-        mChart.isFocusableInTouchMode();
-
-        mChart.setMaxHighlightDistance(70f);
-
-        // Enable Scaling and dragging
-        mChart.setDragEnabled(false);
+        mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
+        mChart.setMaxVisibleValueCount(200);
         mChart.setPinchZoom(true);
         mChart.getAxisRight().setEnabled(true);
-        mChart.setMaxVisibleValueCount(0);
+        Legend l = mChart.getLegend();
+//        mChart.getData().setDrawValues(false);
+//        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
+
+
+//        XAxis xAxis = mChart.getXAxis();
+//        xAxis.setAxisMaxValue(500f);
+//        xAxis.setAxisMinValue(-500f);
+//        YAxis yAxis = mChart.getAxisLeft();
+//        yAxis.setAxisMaxValue(500f);
+//        yAxis.setAxisMinValue(-500f);
+
+
 
 //          These two lines are to check the IP address of the emulator.
 //        String ipad = getLocalIpAddress();
@@ -94,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                         y = Float.parseFloat(message.getArguments().get(i * 2+ 1).toString())* 1000;
                         idx = (int) x;
                         val = (int) y;
-                        mData.add(new Entry(idx, val));
+                        mData.add(new BubbleEntry(idx, val, 10f));
                     }
                     System.out.println(mData);
                 }
@@ -109,7 +132,12 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         }
 
 
-
+//        mData.clear();
+//        for (int i = 0; i < 80; i++) {
+//            float val = (float) (Math.random());
+//            float idx = (float) (Math.random());
+//            mData.add(new Entry(i  * 1000 /80, val * 1000));
+//        }
     }
 
 
@@ -140,25 +168,37 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         mData.clear();
     }
 
+
+
     public void onPlot(View view) {
         System.out.println("plot data");
         System.out.println(mData);
-//        mData.clear();
-//        for (int i = 0; i < 80; i++) {
-//            float val = (float) (Math.random());
-//            float idx = (float) (Math.random());
-//            mData.add(new Entry(i  * 1000 /80, val * 1000));
-//        }
-        ScatterDataSet set1 = new ScatterDataSet(mData, "Data");
-        set1.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
-        set1.setColor(ColorTemplate.COLORFUL_COLORS[1]);
-        set1.setScatterShapeSize(10f);
-        ArrayList<IScatterDataSet> dataSets = new ArrayList<>();
+
+        mData.clear();
+        for (int i = 0; i < 80; i++) {
+            float val = (float) (Math.random() * 1000f);
+            float idx = (float) (Math.random());
+            float size = (float) (Math.random() * 500f );
+            mData.add(new BubbleEntry(i* 1000/80 ,  val, 100f ));
+        }
+
+        BubbleDataSet set1 = new BubbleDataSet(mData, "Data");
+
+//        set1.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
+        set1.setColor(ColorTemplate.COLORFUL_COLORS[2], 200);
+        set1.setDrawValues(false);
+
+//        set1.setScatterShapeSize(10f);
+        ArrayList<IBubbleDataSet> dataSets = new ArrayList<IBubbleDataSet>();
         dataSets.add(set1); // add the datasets
-        ScatterData data = new ScatterData(dataSets);
+        BubbleData data = new BubbleData(dataSets);
+        data.setDrawValues(false);
+        data.setValueTextSize(8f);
+        data.setValueTextColor(Color.WHITE);
+
+        data.setHighlightCircleWidth(20f);
         mChart.setData(data);
         mChart.invalidate();
-
 
     }
 
@@ -172,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         Thread trigger = new Thread(new OSCSend(myIP, (int) e.getX()));
         trigger.start();
     }
-
 
 
     @Override

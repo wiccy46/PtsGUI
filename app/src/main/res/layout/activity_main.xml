@@ -15,9 +15,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.github.mikephil.charting.charts.ScatterChart
-            android:id="@+id/scatter"
-            android:layout_width="match_parent"
+        <com.github.mikephil.charting.charts.BubbleChart
+            android:id="@+id/chart1"
+            android:layout_width="1500dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5" />
 
