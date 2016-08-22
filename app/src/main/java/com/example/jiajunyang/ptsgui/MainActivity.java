@@ -118,12 +118,12 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 //        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
 
 //
-//        XAxis xAxis = mChart.getXAxis();
-//        xAxis.setAxisMaxValue(500f);
-//        xAxis.setAxisMinValue(-500f);
-//        YAxis yAxis = mChart.getAxisLeft();
-//        yAxis.setAxisMaxValue(500f);
-//        yAxis.setAxisMinValue(-500f);
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setAxisMaxValue(0.5f);
+        xAxis.setAxisMinValue(-0.5f);
+        YAxis yAxis = mChart.getAxisLeft();
+        yAxis.setAxisMaxValue(0.5f);
+        yAxis.setAxisMinValue(-0.5f);
 
 
 
@@ -160,11 +160,9 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                     int val;
                     for (int i = 0; i < nr; i ++)
                     {
-                        x = Float.parseFloat(message.getArguments().get(i*2).toString()) * 1000;
-                        y = Float.parseFloat(message.getArguments().get(i * 2+ 1).toString())* 1000;
-                        idx = (int) x;
-                        val = (int) y;
-                        mData.add(new Entry(idx, val));
+                        x = Float.parseFloat(message.getArguments().get(i*2).toString()) ;
+                        y = Float.parseFloat(message.getArguments().get(i * 2+ 1).toString());
+                        mData.add(new Entry(x, y));
                     }
                     System.out.println(mData);
                 }
@@ -221,12 +219,12 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         System.out.println("plot data");
         System.out.println(mData);
 
-        mData.clear();
-        for (int i = 0; i < 600; i++) {
-            float val = (float) (Math.random()) - 0.5f;
-            float idx = (float) (Math.random());
-            mData.add(new Entry(i    /600f - 0.5f, val ));
-        }
+//        mData.clear();
+//        for (int i = 0; i < 600; i++) {
+//            float val = (float) (Math.random()) - 0.5f;
+//            float idx = (float) (Math.random());
+//            mData.add(new Entry(i    /600f - 0.5f, val ));
+//        }
 
 
         ScatterDataSet set1 = new ScatterDataSet(mData, "Data");
@@ -236,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 //        set1.setScatterShapeHoleRadius(3f);
         set1.setColor(ColorTemplate.COLORFUL_COLORS[1]);
 
-        set1.setScatterShapeSize(12f);
+        set1.setScatterShapeSize(8f);
 
         ArrayList<IScatterDataSet> dataSets = new ArrayList<IScatterDataSet>();
 
