@@ -47,7 +47,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/touchView"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:autoText="false"
+                android:background="#3cd5d5d4" />
         </FrameLayout>
 
         <!--android:layout_alignTop="@+id/chart1"-->
