@@ -24,20 +24,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
+
 import java.net.SocketException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 
 public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener {
     private ScatterChart mChart;
 
     public static String myIP = "192.168.178.30";
     private int nr;
-    private OSCPortIn receiver;
     float x, y; // For touchView
 
     private static ArrayList<Entry> mData = new ArrayList<Entry>();
@@ -122,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 //        populateData.start();
 ////
         try {
-            receiver = new OSCPortIn(listenPort);
+            OSCPortIn receiver = new OSCPortIn(listenPort);
             OSCListener resetDataListener = new OSCListener() {
                 public void acceptMessage(Date time, OSCMessage message) {
                     mData.clear();
@@ -140,8 +137,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             OSCListener dataListener = new OSCListener() {
                 public void acceptMessage(Date time, OSCMessage message) {
                     System.out.println("Receiving data");
-                    int idx;
-                    int val;
                     for (int i = 0; i < nr; i ++)
                     {
                         x = Float.parseFloat(message.getArguments().get(i*2).toString()) ;
@@ -159,23 +154,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         } catch (SocketException e) {
             e.printStackTrace();
         }
-    }
-
-    public String getLocalIpAddress() {
-        try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
-                NetworkInterface intf = en.nextElement();
-                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
-                    InetAddress inetAddress = enumIpAddr.nextElement();
-                    if (!inetAddress.isLoopbackAddress()) {
-                        System.out.println("IP is : " + inetAddress.getHostAddress().toString());
-                    }
-                }
-            }
-        } catch (SocketException ex) {
-            System.out.println("getLocalIpAddress Socket error");
-        }
-        return "a";
     }
 
     public void onReset(View view){
