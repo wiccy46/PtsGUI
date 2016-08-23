@@ -40,11 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 
-
-
 public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener {
-
-
     private ScatterChart mChart;
     public static String myIP = "129.70.148.19";
     private int nr;
@@ -61,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mChart = (ScatterChart) findViewById(R.id.chart1);
         mChart.setDescription("");
         mChart.setOnChartValueSelectedListener(this);
@@ -73,8 +68,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         mChart.setPinchZoom(true);
         mChart.getAxisRight().setEnabled(true);
         mChart.setMaxHighlightDistance(10f);
-        Legend l = mChart.getLegend();
-
         final TextView textView = (TextView)findViewById(R.id.textView);
         final View touchView = findViewById(R.id.touchView); // listen for touch event;
 
@@ -94,38 +87,35 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
         });
 
-        System.out.println("Width: " + touchViewWidth);
-        System.out.println("Height: " + touchViewHeight);
-
         touchView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 int pointerIndex = event.getActionIndex();
                 switch( event.getAction()){
                     case MotionEvent.ACTION_DOWN: {
-                        float x = (event.getX(pointerIndex) / touchViewWidth - 0.5f);
-                        float y = - (event.getY(pointerIndex)/(touchViewHeight) - 0.5f);
+                        float x = (((event.getX(pointerIndex) / touchViewWidth) - 0.081807f) / 0.873709f - 0.5f) * 0.6f /0.5f;
+                        float y = ((- (event.getY(pointerIndex)/(touchViewHeight)) + 0.04257559f) /0.91671634f + 0.5f) * 0.6f /0.5f;
                         textView.setText("Touch coordinates : " +
                                 String.valueOf(x) + " x " + String.valueOf(y));
+
+                        Thread trigger = new Thread(new OSCSend(myIP, x, y));
+                        trigger.start();
                     }
                 }
                 return true;
             }
         });
 
-
 //        mChart.getData().setDrawValues(false);
 //        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
 
-//
         XAxis xAxis = mChart.getXAxis();
-        xAxis.setAxisMaxValue(0.5f);
-        xAxis.setAxisMinValue(-0.5f);
+        xAxis.setAxisMaxValue(0.6f);
+
+        xAxis.setAxisMinValue(-0.6f);
         YAxis yAxis = mChart.getAxisLeft();
-        yAxis.setAxisMaxValue(0.5f);
-        yAxis.setAxisMinValue(-0.5f);
-
-
+        yAxis.setAxisMaxValue(0.6f);
+        yAxis.setAxisMinValue(-0.6f);
 
 //          These two lines are to check the IP address of the emulator.
 //        String ipad = getLocalIpAddress();
@@ -133,8 +123,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
 //        Thread populateData = new Thread(new ReceiveOSC());
 //        populateData.start();
-
-
 ////
         try {
             receiver = new OSCPortIn(listenPort);
@@ -151,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                     System.out.println("row number is " + nr);
                 }
             };
-
 
             OSCListener dataListener = new OSCListener() {
                 public void acceptMessage(Date time, OSCMessage message) {
@@ -176,7 +163,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             e.printStackTrace();
         }
 
-
 //        mData.clear();
 //        for (int i = 0; i < 80; i++) {
 //            float val = (float) (Math.random());
@@ -184,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 //            mData.add(new Entry(i  * 1000 /80, val * 1000));
 //        }
     }
-
 
     public String getLocalIpAddress() {
         try {
@@ -203,17 +188,14 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         return "a";
     }
 
-
-
     public void onPrint(View view){
         System.out.println("New data is : ");
         System.out.println(mData);
     }
     public void onReset(View view){
         mData.clear();
+        mChart.invalidate();
     }
-
-
 
     public void onPlot(View view) {
         System.out.println("plot data");
@@ -226,28 +208,21 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 //            mData.add(new Entry(i    /600f - 0.5f, val ));
 //        }
 
-
         ScatterDataSet set1 = new ScatterDataSet(mData, "Data");
-
         set1.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
 //        set1.setScatterShapeHoleColor(ColorTemplate.COLORFUL_COLORS[3]);
 //        set1.setScatterShapeHoleRadius(3f);
         set1.setColor(ColorTemplate.COLORFUL_COLORS[1]);
-
         set1.setScatterShapeSize(8f);
-
         ArrayList<IScatterDataSet> dataSets = new ArrayList<IScatterDataSet>();
-
         dataSets.add(set1); // add the datasets
         ScatterData data = new ScatterData(dataSets);
 //        data.setDrawValues(false);
 //        data.setValueTextSize(8f);
 //        data.setValueTextColor(Color.WHITE);
-
 //        data.setHighlightCircleWidth(20f);
         mChart.setData(data);
         mChart.invalidate();
-
     }
 
     // On value selec, need to find the right index. But at the moment it is not correct.
@@ -257,13 +232,11 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                 "Value: " + e.getY() + ", xIndex: " + e.getX()
                         + ", DataSet index: " + h.getDataSetIndex());
         // The actual index needs to be modified.
-        Thread trigger = new Thread(new OSCSend(myIP, (int) e.getX()));
-        trigger.start();
+//        Thread trigger = new Thread(new OSCSend(myIP, (int) e.getX()));
+//        trigger.start();
     }
-
 
     @Override
     public void onNothingSelected() {
     }
-
 }

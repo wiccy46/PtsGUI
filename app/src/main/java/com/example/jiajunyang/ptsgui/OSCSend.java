@@ -14,13 +14,14 @@ import java.util.ArrayList;
  */
 
 public class OSCSend implements Runnable {
-    String myIP; int idx;
+    String myIP; float x, y;
     OSCPortOut oscPortOut; // Needs to be an input option.
     int myPort = 5678;
 
-    public OSCSend(String myIP, int idx){
+    public OSCSend(String myIP, float x, float y){
         this.myIP = myIP;
-        this.idx = idx;
+        this.x = x;
+        this.y = y;
         try{
             // Connect to IP and port
             this.oscPortOut  = new OSCPortOut(InetAddress.getByName(myIP), myPort);
@@ -34,9 +35,10 @@ public class OSCSend implements Runnable {
 
     private void sendIndex(){
         ArrayList<Object> sendBang = new ArrayList<>();
-        sendBang.add(idx);
-        OSCMessage message = new OSCMessage("/fromPython", sendBang);
-        Log.d("OSC", "Data index: " + idx);
+        sendBang.add(x);
+        sendBang.add(y);
+        OSCMessage message = new OSCMessage("/trigger", sendBang);
+        Log.d("OSC", "Send Coordinates");
         try{
             oscPortOut.send(message);
         } catch (Exception e){
