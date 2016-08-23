@@ -1,28 +1,17 @@
 package com.example.jiajunyang.ptsgui;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import com.github.mikephil.charting.charts.BubbleChart;
 import com.github.mikephil.charting.charts.ScatterChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BubbleData;
-import com.github.mikephil.charting.data.BubbleDataSet;
-import com.github.mikephil.charting.data.BubbleEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.ScatterData;
 import com.github.mikephil.charting.data.ScatterDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.interfaces.datasets.IBubbleDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
@@ -31,7 +20,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -43,10 +34,11 @@ import java.util.Enumeration;
 
 public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener {
     private ScatterChart mChart;
-    public static String myIP = "129.70.148.19";
+
+    public static String myIP = "192.168.178.30";
     private int nr;
     private OSCPortIn receiver;
-    float x, y;
+    float x, y; // For touchView
 
     private static ArrayList<Entry> mData = new ArrayList<Entry>();
     int listenPort = 7012;
@@ -62,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         mChart.setDescription("");
         mChart.setOnChartValueSelectedListener(this);
         mChart.setDrawGridBackground(false);
-        mChart.setTouchEnabled(true);
+        mChart.setTouchEnabled(false);
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
         mChart.setMaxVisibleValueCount(0);
@@ -117,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setAxisMaxValue(0.6f);
-
         xAxis.setAxisMinValue(-0.6f);
         YAxis yAxis = mChart.getAxisLeft();
         yAxis.setAxisMaxValue(0.6f);
@@ -187,13 +178,17 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         return "a";
     }
 
-    public void onPrint(View view){
-        System.out.println("New data is : ");
-        System.out.println(mData);
-    }
     public void onReset(View view){
         mData.clear();
         mChart.invalidate();
+    }
+
+
+    public void onPrint(View view){
+        String androidIP;
+        androidIP = FindIP.getIPAddress(true);
+        Toast.makeText(getApplicationContext(), "IP address: " + androidIP, Toast.LENGTH_LONG).show();
+
     }
 
     public void onPlot(View view) {
@@ -209,17 +204,11 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
         ScatterDataSet set1 = new ScatterDataSet(mData, "Data");
         set1.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
-//        set1.setScatterShapeHoleColor(ColorTemplate.COLORFUL_COLORS[3]);
-//        set1.setScatterShapeHoleRadius(3f);
         set1.setColor(ColorTemplate.COLORFUL_COLORS[1]);
         set1.setScatterShapeSize(8f);
         ArrayList<IScatterDataSet> dataSets = new ArrayList<IScatterDataSet>();
         dataSets.add(set1); // add the datasets
         ScatterData data = new ScatterData(dataSets);
-//        data.setDrawValues(false);
-//        data.setValueTextSize(8f);
-//        data.setValueTextColor(Color.WHITE);
-//        data.setHighlightCircleWidth(20f);
         mChart.setData(data);
         mChart.invalidate();
     }
@@ -230,12 +219,30 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         Log.i("VAL SELECTED",
                 "Value: " + e.getY() + ", xIndex: " + e.getX()
                         + ", DataSet index: " + h.getDataSetIndex());
-        // The actual index needs to be modified.
-//        Thread trigger = new Thread(new OSCSend(myIP, (int) e.getX()));
-//        trigger.start();
     }
 
     @Override
     public void onNothingSelected() {
+    }
+
+    public void enterIP(View view) {
+        EditText yourIP = (EditText) findViewById(R.id.enterIP);
+
+        boolean validIP = true;
+        IPAddressValidator ipvalidator = new IPAddressValidator();
+
+        try {
+            myIP = yourIP.getText().toString(); // myIP is global variable
+            validIP = ipvalidator.validate(myIP);
+        } catch (NullPointerException e)
+        {
+            Log.d("Error", "Input address is NULL");
+        }
+        if (validIP){
+            Toast.makeText(getApplicationContext(), "New IP is " + myIP, Toast.LENGTH_LONG).show();
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Invalid IP, correct format,e.g. 192.168.0.1, 255.255.255.255.", Toast.LENGTH_LONG).show();
+        }
     }
 }

@@ -90,10 +90,34 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Display"
+                    android:text="print IP"
                     android:id="@+id/button2"
                     android:layout_weight="0.5"
                     android:onClick="onPrint" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Enter Python IP:"
+                    android:id="@+id/enteripText"
+                    android:textColor="@color/abc_primary_text_disable_only_material_light" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:ems="10"
+                    android:id="@+id/enterIP"
+                    android:layout_weight="1"
+                    android:onClick="enterIP" />
+
             </LinearLayout>
 
             <LinearLayout
