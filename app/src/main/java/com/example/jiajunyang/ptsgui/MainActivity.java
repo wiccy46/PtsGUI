@@ -95,9 +95,12 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                     case MotionEvent.ACTION_DOWN: {
                         float x = (((event.getX(pointerIndex) / touchViewWidth) - 0.081807f) / 0.873709f - 0.5f) * 0.6f /0.5f;
                         float y = ((- (event.getY(pointerIndex)/(touchViewHeight)) + 0.04257559f) /0.91671634f + 0.5f) * 0.6f /0.5f;
-                        textView.setText("Touch coordinates : " +
-                                String.valueOf(x) + " x " + String.valueOf(y));
 
+                        float pressure = event.getPressure() * 5f;
+
+//                        textView.setText("Touch coordinates : " +
+//                                String.valueOf(x) + " x " + String.valueOf(y));
+                        textView.setText("Touch pressure : " + String.valueOf(pressure));
                         Thread trigger = new Thread(new OSCSend(myIP, x, y));
                         trigger.start();
                     }
@@ -162,13 +165,6 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         } catch (SocketException e) {
             e.printStackTrace();
         }
-
-//        mData.clear();
-//        for (int i = 0; i < 80; i++) {
-//            float val = (float) (Math.random());
-//            float idx = (float) (Math.random());
-//            mData.add(new Entry(i  * 1000 /80, val * 1000));
-//        }
     }
 
     public String getLocalIpAddress() {
