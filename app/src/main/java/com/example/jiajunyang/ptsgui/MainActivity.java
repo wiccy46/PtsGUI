@@ -36,6 +36,7 @@ import android.widget.TextView;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -95,12 +96,14 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                     case MotionEvent.ACTION_DOWN: {
                         float x = (((event.getX(pointerIndex) / touchViewWidth) - 0.081807f) / 0.873709f - 0.5f) * 0.6f /0.5f;
                         float y = ((- (event.getY(pointerIndex)/(touchViewHeight)) + 0.04257559f) /0.91671634f + 0.5f) * 0.6f /0.5f;
-
                         float pressure = event.getPressure() * 5f;
-
-//                        textView.setText("Touch coordinates : " +
-//                                String.valueOf(x) + " x " + String.valueOf(y));
-                        textView.setText("Touch pressure : " + String.valueOf(pressure));
+                        if (pressure > 1.0f)
+                        {
+                            pressure = 1.0f;  // Hard clipping of the pressure.
+                        }
+                        DecimalFormat df = new DecimalFormat("#.00");
+                        textView.setText("Touch coordinates : " +  " x: " +
+                                String.valueOf(df.format(x)) + " y: " + String.valueOf(df.format(y)) + "\n" + "Pressure: " + String.valueOf(pressure) );
                         Thread trigger = new Thread(new OSCSend(myIP, x, y));
                         trigger.start();
                     }
