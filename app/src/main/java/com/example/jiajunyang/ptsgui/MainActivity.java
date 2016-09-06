@@ -13,6 +13,7 @@ import com.github.mikephil.charting.data.ScatterDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
@@ -25,6 +26,7 @@ import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,12 +36,16 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnSeekBarChangeListener,
+        OnChartValueSelectedListener {
     private ScatterChart mChart;
+
+    private SeekBar seekSigma, seekDt, seekR;
 
     public static String myIP = "192.168.178.30";
     private int nr;
     float x, y; // For touchView
+    int s, t, r;
 
     private static ArrayList<Entry> mData = new ArrayList<Entry>();
     int listenPort = 7012;
@@ -65,6 +71,16 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         mChart.setMaxHighlightDistance(10f);
         final TextView textView = (TextView)findViewById(R.id.textView);
         final View touchView = findViewById(R.id.touchView); // listen for touch event;
+
+        seekSigma = (SeekBar) findViewById(R.id.sigmaSeekBar) ;
+        seekSigma.setOnSeekBarChangeListener(this);
+        seekDt = (SeekBar) findViewById(R.id.dtSeekBar);
+        seekDt.setOnSeekBarChangeListener(this);
+        seekR = (SeekBar) findViewById(R.id.rSeekBar);
+        seekR.setOnSeekBarChangeListener(this);
+
+
+
 
         // Get the width and height of the control panel.
         touchView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -98,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                         DecimalFormat df = new DecimalFormat("#.00");
                         textView.setText("Touch coordinates : " +  " x: " +
                                 String.valueOf(df.format(x)) + " y: " + String.valueOf(df.format(y)) + "\n" + "Pressure: " + String.valueOf(pressure) );
-                        Thread trigger = new Thread(new OSCSend(myIP, x, y));
+                        Thread trigger = new Thread(new OSCSend(myIP, "trigger", x, y, 0, 0, 0));
                         trigger.start();
                     }
                 }
@@ -235,5 +251,26 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         });
     }
 
+    // Update Slider.
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        s = seekSigma.getProgress();
+        t = seekDt.getProgress();
+        r = seekR.getProgress();
+        Thread sliderUpdate = new Thread(new OSCSend(myIP, "sliders", 0, 0, s, t, r));
+        sliderUpdate.start();
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        // TODO Auto-generated method stub
+
+    }
 
 }

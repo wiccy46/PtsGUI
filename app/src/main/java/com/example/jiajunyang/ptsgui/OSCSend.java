@@ -11,14 +11,21 @@ import java.util.ArrayList;
 
 
 public class OSCSend implements Runnable {
-    String myIP; float x, y;
+    String myIP, target; float x, y;
     OSCPortOut oscPortOut; // Needs to be an input option.
     int myPort = 5678;
+    int sigmaSlider, dtSlider, rSlider;
 
-    public OSCSend(String myIP, float x, float y){
+
+    public OSCSend(String myIP, String target, float x, float y, int s, int t, int r){
         this.myIP = myIP;
+        this.target = target;
         this.x = x;
         this.y = y;
+        this.sigmaSlider = s;
+        this.dtSlider = t;
+        this.rSlider = r;
+
         try{
             // Connect to IP and port
             this.oscPortOut  = new OSCPortOut(InetAddress.getByName(myIP), myPort);
@@ -28,6 +35,21 @@ public class OSCSend implements Runnable {
             // Report error
             Log.d("OSCSendInitalisation", "Socket exception error!");
         }
+    }
+
+    private void sendSlider(){
+        ArrayList<Object> sendBang = new ArrayList<>();
+        sendBang.add(sigmaSlider);
+        sendBang.add(dtSlider);
+        sendBang.add(rSlider);
+        OSCMessage message = new OSCMessage("/sliders", sendBang);
+        Log.d("OSC", "Send Sliders information");
+        try{
+            oscPortOut.send(message);
+        } catch (Exception e){
+            Log.d("OSC", "Failed to send.");
+        }
+
     }
 
     private void sendIndex(){
@@ -47,7 +69,13 @@ public class OSCSend implements Runnable {
     @Override
     public void run(){
         if (oscPortOut != null) {
-            sendIndex();}
+            if (target == "trigger"){
+                sendIndex();
+            }
+            else if (target == "sliders"){
+                sendSlider();
+            }
+        }
         else{
             Log.d("OSC Action Error: ", "OSC Action Error."); // Need to change it to a Toast.
              }

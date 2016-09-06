@@ -150,7 +150,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/sigmaSeekBar"
-                        android:layout_weight="0.3" />
+                        android:layout_weight="0.3"
+                        android:max ="100"
+
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -170,7 +173,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/dtSeekBar"
-                        android:layout_weight="0.3" />
+                        android:layout_weight="0.3"
+                        android:max ="100"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -190,7 +194,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/rSeekBar"
-                        android:layout_weight="0.3" />
+                        android:layout_weight="0.3"
+                        android:max ="100"/>
                 </LinearLayout>
 
             </LinearLayout>
