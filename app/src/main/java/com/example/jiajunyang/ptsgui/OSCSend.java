@@ -14,10 +14,11 @@ public class OSCSend implements Runnable {
     String myIP, target; float x, y;
     OSCPortOut oscPortOut; // Needs to be an input option.
     int myPort = 5678;
-    int sigmaSlider, dtSlider, rSlider;
+
+    float sigmaSlider, dtSlider, rSlider;
 
 
-    public OSCSend(String myIP, String target, float x, float y, int s, int t, int r){
+    public OSCSend(String myIP, String target, float x, float y, float s, float t, float r){
         this.myIP = myIP;
         this.target = target;
         this.x = x;
@@ -38,12 +39,13 @@ public class OSCSend implements Runnable {
     }
 
     private void sendSlider(){
+        // For now. I cant send 3 arguments, haven't figured out why.
         ArrayList<Object> sendBang = new ArrayList<>();
-        sendBang.add(sigmaSlider);
+//        sendBang.add(sigmaSlider);
         sendBang.add(dtSlider);
         sendBang.add(rSlider);
         OSCMessage message = new OSCMessage("/sliders", sendBang);
-        Log.d("OSC", "Send Sliders information");
+//        Log.d("OSC", "Send Sliders information");
         try{
             oscPortOut.send(message);
         } catch (Exception e){

@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements OnSeekBarChangeLi
     public static String myIP = "192.168.178.30";
     private int nr;
     float x, y; // For touchView
-    int s, t, r;
+    float s, t, r;
 
     private static ArrayList<Entry> mData = new ArrayList<Entry>();
     int listenPort = 7012;
@@ -259,6 +259,10 @@ public class MainActivity extends AppCompatActivity implements OnSeekBarChangeLi
         r = seekR.getProgress();
         Thread sliderUpdate = new Thread(new OSCSend(myIP, "sliders", 0, 0, s, t, r));
         sliderUpdate.start();
+//        System.out.println(s);
+//        System.out.println(t);
+//        System.out.println(r);
+
     }
 
     @Override
