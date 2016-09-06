@@ -9,9 +9,6 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-/**
- * Created by jiajunyang on 11/08/16.
- */
 
 public class OSCSend implements Runnable {
     String myIP; float x, y;

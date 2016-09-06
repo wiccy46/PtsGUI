@@ -5,12 +5,10 @@ import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPortIn;
 import java.net.SocketException;
-import java.util.Arrays;
 import java.util.Date;
 
 public class ReceiveOSC implements Runnable {
     int myPort = 7012;
-
     OSCPortIn receiver;
 
     public ReceiveOSC() {

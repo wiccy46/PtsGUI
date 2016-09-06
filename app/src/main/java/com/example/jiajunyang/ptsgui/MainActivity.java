@@ -1,5 +1,6 @@
 package com.example.jiajunyang.ptsgui;
 
+import android.content.Context;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,9 +18,12 @@ import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPortIn;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
 
     private float touchViewWidth; // Locate touchView dimension
     private float touchViewHeight;
+    boolean validIP = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
                 return true;
             }
         });
+
+
 
 //        mChart.getData().setDrawValues(false);
 //        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
@@ -162,10 +169,14 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     }
 
 
+    // Print IP address here.
     public void onPrint(View view){
         String androidIP;
         androidIP = FindIP.getIPAddress(true);
+
         Toast.makeText(getApplicationContext(), "IP address: " + androidIP, Toast.LENGTH_LONG).show();
+
+
 
     }
 
@@ -204,23 +215,25 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     }
 
     public void enterIP(View view) {
-        EditText yourIP = (EditText) findViewById(R.id.enterIP);
-
-        boolean validIP = true;
-        IPAddressValidator ipvalidator = new IPAddressValidator();
-
-        try {
-            myIP = yourIP.getText().toString(); // myIP is global variable
-            validIP = ipvalidator.validate(myIP);
-        } catch (NullPointerException e)
-        {
-            Log.d("Error", "Input address is NULL");
-        }
-        if (validIP){
-            Toast.makeText(getApplicationContext(), "New IP is " + myIP, Toast.LENGTH_LONG).show();
-        }
-        else {
-            Toast.makeText(getApplicationContext(), "Invalid IP, correct format,e.g. 192.168.0.1, 255.255.255.255.", Toast.LENGTH_LONG).show();
-        }
+        final IPAddressValidator ipvalidator = new IPAddressValidator();
+        final EditText yourIP = (EditText) findViewById(R.id.enterIP);
+        yourIP.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    //do something
+                    myIP = yourIP.getText().toString();
+                    validIP = ipvalidator.validate(myIP);
+                }
+                if (validIP) {
+                    Toast.makeText(getApplicationContext(), "New IP is " + myIP, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Invalid IP, correct format,e.g. 192.168.0.1, 255.255.255.255.", Toast.LENGTH_LONG).show();
+                }
+                return false;
+            }
+        });
     }
+
+
 }

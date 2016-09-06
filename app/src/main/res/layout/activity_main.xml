@@ -68,7 +68,8 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5">
+                android:layout_weight="0.5"
+                android:id="@+id/buttonLayout">
 
                 <Button
                     android:layout_width="wrap_content"
@@ -102,7 +103,8 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5">
+                android:layout_weight="0.6"
+                android:id="@+id/inputLayout">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -114,11 +116,82 @@
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:inputType="phone"
                     android:ems="10"
                     android:id="@+id/enterIP"
                     android:layout_weight="1"
-                    android:onClick="enterIP" />
+                    android:onClick="enterIP"
+                    android:inputType="textPhonetic"
+                    android:imeOptions="actionDone"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:id="@+id/sliderLayout">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="sigma"
+                        android:id="@+id/sigmaText"
+                        android:textColor="@color/abc_primary_text_material_light" />
+
+                    <SeekBar
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/sigmaSeekBar"
+                        android:layout_weight="0.3" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="dt"
+                        android:id="@+id/textView2"
+                        android:textColor="@color/abc_primary_text_material_light" />
+
+                    <SeekBar
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/dtSeekBar"
+                        android:layout_weight="0.3" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="r"
+                        android:id="@+id/textView3"
+                        android:textColor="@color/abc_primary_text_material_light" />
+
+                    <SeekBar
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rSeekBar"
+                        android:layout_weight="0.3" />
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -126,7 +199,8 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5">
+                android:layout_weight="0.5"
+                android:id="@+id/printLayout">
 
                 <TextView
                     android:layout_width="match_parent"
